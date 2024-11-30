@@ -25,6 +25,22 @@ const bookSchema = Joi.object({
   }),
 });
 
+const bookIdSchema = Joi.object({
+  bookId: Joi.string().guid({ version: 'uuidv4' }).required().messages({
+    'string.guid': 'Invalid book ID format. It should be a valid UUID.',
+    'any.required': 'Book ID is required.',
+  })
+});
+
+ const validateBookId = (req, res, next) => {
+  const { error } = bookIdSchema.validate({ bookId: req.params.id });
+
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+
+  next();
+};
 
 const validateBookData = (req, res, next) => {
   const { error, value } = bookSchema.validate(req.body);
@@ -35,4 +51,4 @@ const validateBookData = (req, res, next) => {
   next(); 
 };
 
-module.exports = validateBookData;
+module.exports = {validateBookData,validateBookId};

@@ -1,8 +1,14 @@
 const prisma= require("../config/db")
-
+const { v4: uuidv4 } = require('uuid');
 class BookService {
     async creatBook(data){
-        return await prisma.book.create({data})
+        const bookId = uuidv4();
+        return await prisma.book.create({
+         data:{
+            id:bookId,
+            ...data
+        }
+    })
     }
 
     async getAllbooks(){
